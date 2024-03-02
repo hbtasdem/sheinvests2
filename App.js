@@ -12,18 +12,7 @@ import AssetExample from './components/AssetExample';
 
 const Stack = createNativeStackNavigator();
 
- function App2() {
-  return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Main" component= {MainScreen} />
-      </Stack.Navigator>
-    </NavigationContainer>
-  );
-}
-
-export default function App() {
+function HomeScreen({navigation}) {
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.paragraph}>
@@ -34,12 +23,32 @@ export default function App() {
       </Card>
       <Button 
       onPress={() => navigation.navigate('Main')}
-        title="enter"
+        title="Enter"
         />
-      
     </SafeAreaView>
   );
 }
+
+function MainScreen(){
+  return(
+    <SafeAreaView style={styles.container}>
+      <Text style={{ flex: 1,alignItems: 'Left', padding: 8, fontSize: 18, fontWeight: 'bold' }}>
+      </Text>
+    </SafeAreaView>
+  );
+}
+
+ export default function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Main" component= {MainScreen} options={{title: 'Learning'}} />
+      </Stack.Navigator>
+    </NavigationContainer>
+  );
+}
+
 
 const styles = StyleSheet.create({
   container: {
@@ -55,3 +64,4 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
 });
+
