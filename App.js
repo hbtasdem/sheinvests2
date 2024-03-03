@@ -1,14 +1,16 @@
-import { Text,  SafeAreaView, ScrollView, View, StyleSheet, Button, Icon} from 'react-native';
+import { Text,  SafeAreaView, ScrollView, View, StyleSheet, Button, Alert, TextInput, TouchableOpacity } from 'react-native';
 import React, { useState } from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { AntDesign } from '@expo/vector-icons';
 import { FontAwesome } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { Dropdown } from 'react-native-element-dropdown';
 
 import EnvelopeAsset from './components/EnvelopeAsset';
 import AssetLearning from './components/AssetLearning';
 import PYF from './components/PYF';
+import BudgetExample from './components/BudgetExample'
 
 // You can import supported modules from npm
 import { Card } from 'react-native-paper';
@@ -20,6 +22,7 @@ import AssetExample from './components/AssetExample';
 const Stack = createNativeStackNavigator();
 
 function HomeScreen({navigation}) {
+  
   return (
     <SafeAreaView style={styles.container}>
       <Text style={styles.paragraph}>
@@ -124,18 +127,62 @@ function Learning({navigation}){
 
 
 
+
 function MainScreen({navigation}){
+  const [textInputValue, setTextInputValue] = useState('');
+
+  const handleTextInputChange = (text) => {
+    setTextInputValue(text);
+  };
+
+  const handleSubmit = async (e) => {
+    console.log(textInputValue)
+    console.log(res2)
+    // Show an alert with the input value
+    let res = await fetch('localhost:5000/calculate_expenses', {
+        method: "POST",
+        body: JSON.stringify({
+        income: e.target.value
+      }),
+    });
+    let res2 = await fetch('localhost:5000/get_expenses', {
+        method: "GET",      
+    });
+    // Clear the input field after submission if needed
+    setTextInputValue('');
+  };
+
+  
+
   return(
     <SafeAreaView style={styles.container}>
-      <Text style={{ flex: 1,alignItems: 'Left', padding: 8, fontSize: 18, fontWeight: 'bold' }}>
+      
+      <TextInput
+        style={styles.input}
+        onChangeText={handleTextInputChange}
+        value={textInputValue}
+        placeholder="Income Before Taxes"
+      />
+      <TouchableOpacity onPress={handleSubmit}>
+        <Text>Submit</Text>
+      </TouchableOpacity>
+      <View>
+      
+      <Text>
+      Calculations: 
+      </Text>
+      <BudgetExample />
+      </View>
+      <Text style={{ flex: 1, alignItems: 'left', padding: 8, fontSize: 18, fontWeight: 'bold' }}>
+      
       </Text>
       <SafeAreaView style={styles.bottomBar}>
-  
-      <AntDesign.Button name="infocirlceo" backgroundColor="white" size={30} color="black"  onPress={() => navigation.navigate('Info')}/>
-      <FontAwesome.Button name="bank" backgroundColor="white" size={30} color="black" onPress={() => navigation.navigate('Main')}/>
-      <Entypo.Button name="text-document" backgroundColor="white" size={30} color="black" onPress={() => navigation.navigate('Learning')}/>
-  </SafeAreaView>
+        <AntDesign.Button name="infocirlceo" backgroundColor="white" size={30} color="black" onPress={() => navigation.navigate('Info')} />
+        <FontAwesome.Button name="bank" backgroundColor="white" size={30} color="black" onPress={() => navigation.navigate('Main')} />
+        <Entypo.Button name="text-document" backgroundColor="white" size={30} color="black" onPress={() => navigation.navigate('Learning')} />
+      </SafeAreaView>
     </SafeAreaView>
+
   );
 }
 
@@ -165,7 +212,15 @@ const styles = StyleSheet.create({
   overlay: {
     margin: 10,
     fontSize: 20
-  }
+  },
+  input: {
+    height: 40,
+    width: '80%',
+    borderColor: 'gray',
+    borderWidth: 1,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
 
 });
 
